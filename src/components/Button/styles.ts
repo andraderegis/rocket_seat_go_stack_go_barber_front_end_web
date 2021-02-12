@@ -15,6 +15,6 @@ export const Container = styled.button`
 
   &:hover {
     /*Escurecendo 20% da cor original*/
-    background: ${shade(0.2, '#ff9000')}
+    background: ${shade(0.2, '#ff9000')};
   }
 `;
