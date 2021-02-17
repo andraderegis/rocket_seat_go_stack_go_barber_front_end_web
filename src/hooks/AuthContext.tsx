@@ -4,6 +4,7 @@ import api from 'services/api';
 interface AuthContextData {
   user: AuthUserData;
   signIn(credentials: SignInCredentials): Promise<void>;
+  signOut(): void;
 }
 interface AuthState {
   token: string;
@@ -55,8 +56,17 @@ export const AuthProvider: React.FC = ({ children }) => {
     setAuthState({ token, user });
   }, []);
 
+  const signOut = useCallback(() => {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);
+
+    setAuthState({} as AuthState);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user: authState.user, signIn }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user: authState.user, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
