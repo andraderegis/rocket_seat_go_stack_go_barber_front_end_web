@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import api from 'services/api';
 
 interface AuthContextData {
@@ -27,7 +27,7 @@ const LOCAL_STORAGE_KEYS = {
   USER: '@GoBarber:user'
 };
 
-export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>(() => {
@@ -58,4 +58,14 @@ export const AuthProvider: React.FC = ({ children }) => {
   return (
     <AuthContext.Provider value={{ user: authState.user, signIn }}>{children}</AuthContext.Provider>
   );
+};
+
+export const useAuth = (): AuthContextData => {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+
+  return context;
 };
