@@ -1,9 +1,10 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useContext } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
+import { AuthContext } from 'context/AuthContext';
 import getValidationErrors from 'utils/getValidationErrors';
 
 import Button from 'components/Button';
@@ -12,28 +13,42 @@ import logoImg from '../../assets/logo.svg';
 
 import { Container, Content, Background } from './styles';
 
+interface SignInFormData {
+  email: string;
+  password: string;
+}
+
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  const handleSubmit = useCallback(async (data: object) => {
-    try {
-      formRef.current?.setErrors({});
+  const { signIn } = useContext(AuthContext);
 
-      const schema = Yup.object().shape({
-        email: Yup.string().required('Email obrigatório').email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória')
-      });
+  const handleSubmit = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      await schema.validate(data, {
-        abortEarly: false
-      });
-    } catch (error) {
-      const validateErrors = getValidationErrors(error);
+        const schema = Yup.object().shape({
+          email: Yup.string().required('Email obrigatório').email('Digite um e-mail válido'),
+          password: Yup.string().required('Senha obrigatória')
+        });
 
-      formRef.current?.setErrors(validateErrors);
-    }
-  }, []);
+        await schema.validate(data, {
+          abortEarly: false
+        });
+
+        signIn({
+          email: data.email,
+          password: data.password
+        });
+      } catch (error) {
+        const validateErrors = getValidationErrors(error);
+
+        formRef.current?.setErrors(validateErrors);
+      }
+    },
+    [signIn]
+  );
 
   return (
     <Container>
