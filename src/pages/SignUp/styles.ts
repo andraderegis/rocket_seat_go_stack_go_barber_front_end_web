@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { shade } from 'polished';
 
 import signUpBackgroundImg from '../../assets/sign-up-background.png';
@@ -24,6 +24,31 @@ export const Content = styled.div`
 
   max-width: 700px;
   width: 100%;
+`;
+
+const appersFromRight = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(50px)
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+export const AnimationContainer = styled.div`
+  animation: ${appersFromRight} 1s;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  /*
+    Possui os mesmos efeitos das seguintes propriedades
+    flex-direction: column;
+    justify-content: center;
+  */
+  place-content: center;
 
   form {
     margin: 80px 0;
